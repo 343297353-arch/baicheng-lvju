@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>百城旅居 · 数字生态上市联盟</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --cyan: #00f5e4;
+      --cyan-dim: rgba(0,245,228,0.15);
+      --blue: #0066ff;
+      --purple: #a855f7;
+      --gold: #f0b429;
+      --dark-bg: #020509;
+      --dark-card: rgba(0,245,228,0.03);
+      --border: rgba(0,245,228,0.12);
+      --border-bright: rgba(0,245,228,0.35);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.45);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans SC', -apple-system, sans-serif; background: var(--dark-bg); color: var(--text-primary); overflow-x: hidden; line-height: 1.8; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: 9999; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,245,228,0.015) 2px, rgba(0,245,228,0.015) 4px); pointer-events: none; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--dark-bg); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 2px; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 16px 60px; display: flex; align-items: center; justify-content: space-between; background: rgba(2,5,9,0.92); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); }
+    nav .logo { font-size: 16px; font-weight: 900; letter-spacing: 3px; color: var(--cyan); text-shadow: 0 0 20px var(--cyan); }
+    nav .logo span { display: block; font-size: 10px; letter-spacing: 5px; color: var(--text-secondary); font-weight: 300; margin-top: 2px; }
+    nav ul { display: flex; gap: 32px; list-style: none; align-items: center; }
+    nav ul li a { color: var(--text-secondary); text-decoration: none; font-size: 12px; letter-spacing: 2px; transition: all 0.3s; position: relative; padding-bottom: 4px; }
+    nav ul li a:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+    .nav-cta { padding: 7px 20px; border: 1px solid var(--cyan) !important; color: var(--cyan) !important; border-radius: 3px; box-shadow: 0 0 15px rgba(0,245,228,0.15), inset 0 0 15px rgba(0,245,228,0.05); transition: all 0.3s !important; }
+    .nav-cta:hover { background: rgba(0,245,228,0.15) !important; box-shadow: 0 0 30px rgba(0,245,228,0.3), inset 0 0 20px rgba(0,245,228,0.1) !important; text-shadow: 0 0 10px var(--cyan) !important; }
+
+    .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,245,228,0.1) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 60%, rgba(0,102,255,0.07) 0%, transparent 50%), radial-gradient(ellipse 40% 30% at 20% 80%, rgba(168,85,247,0.05) 0%, transparent 50%), var(--dark-bg); }
+    .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(0,245,228,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,245,228,0.04) 1px, transparent 1px); background-size: 50px 50px; mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 80%); }
+    .hero-scanline { position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); opacity: 0.3; animation: scanline 6s linear infinite; box-shadow: 0 0 20px var(--cyan); }
+    @keyframes scanline { from { top: -2px; } to { top: 100vh; } }
+    #hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hero-content { position: relative; z-index: 2; max-width: 860px; padding: 0 40px; }
+    .hero-badge { display: inline-block; padding: 5px 18px; border: 1px solid var(--cyan); border-radius: 50px; font-size: 10px; letter-spacing: 5px; color: var(--cyan); margin-bottom: 36px; text-transform: uppercase; font-weight: 500; animation: fadeInDown 1s ease; box-shadow: 0 0 20px rgba(0,245,228,0.2), inset 0 0 20px rgba(0,245,228,0.05); text-shadow: 0 0 10px var(--cyan); }
+    .hero h1 { font-size: clamp(34px, 6.5vw, 72px); font-weight: 900; line-height: 1.1; margin-bottom: 20px; animation: fadeInUp 1s ease 0.2s both; letter-spacing: -1px; }
+    .hero h1 .cyan { color: var(--cyan); text-shadow: 0 0 30px var(--cyan), 0 0 60px rgba(0,245,228,0.3); }
+    .hero h1 .gold { color: var(--gold); text-shadow: 0 0 30px rgba(240,180,41,0.5); }
+    .hero h1 .glitch { position: relative; display: inline-block; animation: glitch 3s infinite 2s; }
+    @keyframes glitch { 0%, 90%, 100% { transform: none; filter: none; } 91% { transform: translateX(-2px); filter: hue-rotate(90deg); color: var(--cyan); } 93% { transform: translateX(2px); color: var(--purple); } 95% { transform: translateX(-1px); filter: none; color: var(--cyan); } }
+    .hero .tagline { font-size: 16px; color: var(--text-secondary); font-weight: 300; margin-bottom: 12px; animation: fadeInUp 1s ease 0.35s both; letter-spacing: 2px; }
+    .hero > .hero-content > p { font-size: 14px; color: var(--text-secondary); max-width: 540px; margin: 0 auto 44px; animation: fadeInUp 1s ease 0.4s both; line-height: 2; }
+    .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; animation: fadeInUp 1s ease 0.55s both; }
+    .btn-primary { padding: 13px 34px; background: linear-gradient(135deg, var(--cyan), #0099aa); color: var(--dark-bg); border: none; border-radius: 4px; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.3s; letter-spacing: 2px; font-family: inherit; box-shadow: 0 0 30px rgba(0,245,228,0.3); }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 50px rgba(0,245,228,0.5), 0 10px 40px rgba(0,245,228,0.2); }
+    .btn-secondary { padding: 13px 34px; background: transparent; color: var(--text-primary); border: 1px solid var(--border-bright); border-radius: 4px; font-size: 13px; cursor: pointer; text-decoration: none; transition: all 0.3s; letter-spacing: 2px; font-family: inherit; box-shadow: 0 0 15px rgba(0,245,228,0.08); }
+    .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 25px rgba(0,245,228,0.2); text-shadow: 0 0 10px var(--cyan); }
+    .hero-stats { display: flex; gap: 50px; justify-content: center; margin-top: 70px; animation: fadeInUp 1s ease 0.7s both; }
+    .hero-stat { text-align: center; }
+    .hero-stat .num { font-size: 36px; font-weight: 900; background: linear-gradient(135deg, var(--cyan), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 8px var(--cyan)); }
+    .hero-stat .label { font-size: 11px; color: var(--text-secondary); letter-spacing: 3px; margin-top: 4px; text-transform: uppercase; }
+    .scroll-hint { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); animation: bounce 2s infinite; z-index: 2; }
+    .scroll-hint span { display: block; width: 1px; height: 36px; background: linear-gradient(to bottom, var(--cyan), transparent); margin: 0 auto; box-shadow: 0 0 8px var(--cyan); }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+    /* ACCORDION */
+    .accordion { max-width: 900px; margin: 0 auto; padding: 60px 40px 80px; }
+    .section-trigger { display: flex; align-items: center; gap: 20px; padding: 20px 28px; border-radius: 6px; background: var(--dark-card); border: 1px solid var(--border); cursor: pointer; transition: all 0.4s; position: relative; overflow: hidden; user-select: none; margin-bottom: 2px; }
+    .section-trigger::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); opacity: 0; transition: opacity 0.3s; }
+    .section-trigger:hover, .section-trigger.active { border-color: var(--border-bright); background: rgba(0,245,228,0.06); }
+    .section-trigger:hover::before, .section-trigger.active::before { opacity: 1; }
+    .section-trigger .num { font-size: 11px; font-weight: 700; color: var(--cyan); letter-spacing: 2px; min-width: 28px; text-shadow: 0 0 8px var(--cyan); }
+    .section-trigger .title { font-size: 15px; font-weight: 600; flex: 1; letter-spacing: 1px; }
+    .section-trigger .en { font-size: 10px; color: var(--text-secondary); letter-spacing: 3px; text-transform: uppercase; margin-right: 8px; }
+    .section-trigger .arrow { width: 20px; height: 20px; border: 1px solid var(--border-bright); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.4s; flex-shrink: 0; }
+    .section-trigger .arrow::after { content: ''; width: 6px; height: 6px; border-right: 1.5px solid var(--cyan); border-bottom: 1.5px solid var(--cyan); transform: rotate(45deg) translate(-1px, -1px); transition: transform 0.4s; box-shadow: 0 0 5px var(--cyan); }
+    .section-trigger.active .arrow { background: rgba(0,245,228,0.15); border-color: var(--cyan); }
+    .section-trigger.active .arrow::after { transform: rotate(225deg) translate(-1px, -1px); }
+    .section-panel { max-height: 0; overflow: hidden; transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; opacity: 0; border: 1px solid transparent; border-top: none; border-radius: 0 0 6px 6px; margin-bottom: 2px; }
+    .section-panel.open { max-height: 3000px; opacity: 1; border-color: var(--border); border-top: none; }
+    .section-panel-inner { padding: 48px 28px; }
+
+    /* INNER STYLES */
+    .panel-title { font-size: clamp(20px, 3.5vw, 34px); font-weight: 900; margin-bottom: 12px; line-height: 1.2; }
+    .panel-title .cyan { color: var(--cyan); text-shadow: 0 0 20px var(--cyan); }
+    .panel-desc { font-size: 14px; color: var(--text-secondary); max-width: 680px; line-height: 2; margin-bottom: 32px; }
+    .feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    .feat-card { padding: 22px 18px; border-radius: 8px; background: rgba(0,245,228,0.03); border: 1px solid var(--border); transition: all 0.3s; position: relative; overflow: hidden; }
+    .feat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); opacity: 0; transition: opacity 0.3s; }
+    .feat-card:hover { border-color: rgba(0,245,228,0.25); background: rgba(0,245,228,0.06); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.3), 0 0 20px rgba(0,245,228,0.05); }
+    .feat-card:hover::before { opacity: 1; }
+    .feat-icon { font-size: 22px; margin-bottom: 10px; }
+    .feat-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .feat-card p { font-size: 11px; color: var(--text-secondary); line-height: 1.8; }
+    .data-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .data-card { padding: 22px; border-radius: 8px; background: linear-gradient(135deg, rgba(0,245,228,0.05), rgba(0,102,255,0.03)); border: 1px solid var(--border); text-align: center; transition: all 0.3s; }
+    .data-card:hover { border-color: var(--cyan); box-shadow: 0 0 25px rgba(0,245,228,0.1); }
+    .data-card .val { font-size: 28px; font-weight: 900; color: var(--cyan); text-shadow: 0 0 15px var(--cyan); }
+    .data-card .lbl { font-size: 10px; color: var(--text-secondary); letter-spacing: 2px; margin-top: 4px; text-transform: uppercase; }
+    .mx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+    .mx-card { padding: 22px; border-radius: 8px; background: rgba(0,245,228,0.02); border: 1px solid var(--border); transition: all 0.3s; }
+    .mx-card:hover { border-color: rgba(0,245,228,0.25); transform: translateY(-3px); }
+    .mx-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .mx-card .tag { font-size: 10px; padding: 2px 8px; border-radius: 50px; background: rgba(0,245,228,0.1); color: var(--cyan); font-weight: 400; }
+    .mx-card p { font-size: 11px; color: var(--text-secondary); line-height: 1.8; }
+    .mx-card .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+    .mx-card .tags span { font-size: 10px; padding: 2px 7px; border-radius: 3px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text-secondary); }
+    .sub-label { font-size: 10px; letter-spacing: 4px; color: var(--cyan); margin-bottom: 12px; text-transform: uppercase; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .sub-label::before { content: ''; width: 20px; height: 1px; background: var(--cyan); }
+    .timeline { display: flex; flex-direction: column; gap: 14px; }
+    .tl-item { display: flex; gap: 16px; align-items: flex-start; }
+    .tl-year-box { padding: 4px 14px; border-radius: 4px; font-size: 11px; font-weight: 800; color: var(--cyan); border: 1px solid var(--border-bright); background: rgba(0,245,228,0.08); white-space: nowrap; flex-shrink: 0; box-shadow: 0 0 10px rgba(0,245,228,0.1); letter-spacing: 2px; text-shadow: 0 0 8px var(--cyan); margin-top: 2px; }
+    .tl-item .content { flex: 1; padding: 14px 18px; border-radius: 6px; background: var(--dark-card); border: 1px solid var(--border); transition: all 0.3s; }
+    .tl-item .content:hover { border-color: rgba(0,245,228,0.25); }
+    .tl-item .content h4 { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .tl-item .content p { font-size: 11px; color: var(--text-secondary); line-height: 1.8; }
+    .panel-table { border-radius: 8px; overflow: hidden; border: 1px solid rgba(240,180,41,0.15); }
+    .panel-table table { width: 100%; border-collapse: collapse; }
+    .panel-table th { padding: 12px 18px; background: rgba(240,180,41,0.07); text-align: left; font-size: 10px; letter-spacing: 2px; color: var(--gold); font-weight: 600; border-bottom: 1px solid rgba(240,180,41,0.15); }
+    .panel-table td { padding: 11px 18px; font-size: 12px; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.03); }
+    .panel-table tr:last-child td { border-bottom: none; }
+    .panel-table td:first-child { color: var(--text-primary); font-weight: 500; }
+    .panel-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .panel-list li { font-size: 12px; color: var(--text-secondary); display: flex; gap: 10px; align-items: flex-start; line-height: 1.7; padding: 10px 14px; border-radius: 5px; background: var(--dark-card); border: 1px solid var(--border); transition: all 0.3s; }
+    .panel-list li:hover { border-color: rgba(0,245,228,0.2); color: var(--text-primary); }
+    .panel-list li::before { content: '▸'; color: var(--cyan); flex-shrink: 0; text-shadow: 0 0 5px var(--cyan); }
+    .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .risk-card { padding: 22px; border-radius: 8px; background: var(--dark-card); border: 1px solid var(--border); transition: all 0.3s; }
+    .risk-card:hover { border-color: rgba(240,180,41,0.25); }
+    .risk-card h4 { font-size: 12px; font-weight: 700; margin-bottom: 10px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+    .risk-card ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .risk-card ul li { font-size: 11px; color: var(--text-secondary); display: flex; gap: 8px; align-items: flex-start; line-height: 1.7; padding: 6px 10px; border-radius: 4px; background: transparent; border: none; }
+    .risk-card ul li:hover { background: transparent; color: var(--text-secondary); }
+    .risk-card ul li::before { content: '•'; color: var(--gold); flex-shrink: 0; }
+    .step-flow { display: flex; gap: 14px; }
+    .step-item { flex: 1; text-align: center; padding: 22px 14px; border-radius: 8px; background: var(--dark-card); border: 1px solid var(--border); transition: all 0.3s; }
+    .step-item:hover { border-color: rgba(0,245,228,0.25); transform: translateY(-4px); }
+    .step-icon { font-size: 26px; margin-bottom: 10px; }
+    .step-item h4 { font-size: 12px; font-weight: 700; margin-bottom: 5px; }
+    .step-item p { font-size: 10px; color: var(--text-secondary); line-height: 1.7; }
+    .panel-quote { font-size: clamp(14px, 2.2vw, 20px); font-weight: 300; line-height: 1.9; padding: 28px 32px; border-radius: 8px; background: linear-gradient(135deg, rgba(0,245,228,0.05), rgba(0,102,255,0.03)); border: 1px solid var(--border); border-left: 3px solid var(--cyan); margin-bottom: 24px; color: rgba(255,255,255,0.55); box-shadow: 0 0 30px rgba(0,245,228,0.05); }
+    .panel-quote strong { color: var(--text-primary); font-weight: 700; }
+    .panel-quote .cyan { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+    .goal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .goal-card { padding: 26px 18px; border-radius: 8px; background: var(--dark-card); border: 1px solid var(--border); text-align: center; transition: all 0.3s; }
+    .goal-card:hover { border-color: rgba(0,245,228,0.25); transform: translateY(-4px); }
+    .goal-card .gi { font-size: 28px; margin-bottom: 10px; }
+    .goal-card h4 { font-size: 12px; font-weight: 700; margin-bottom: 5px; }
+    .goal-card p { font-size: 10px; color: var(--text-secondary); line-height: 1.8; }
+
+    /* FOOTER */
+    footer { padding: 50px 60px; background: #010306; border-top: 1px solid var(--border); text-align: center; margin-top: 40px; }
+    footer .company { font-size: 14px; font-weight: 700; color: var(--cyan); margin-bottom: 6px; text-shadow: 0 0 10px var(--cyan); letter-spacing: 2px; }
+    footer .sub { font-size: 10px; color: var(--text-secondary); letter-spacing: 1px; margin-bottom: 20px; }
+    footer .footer-contact { margin-bottom: 20px; }
+    footer .footer-contact .address { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; letter-spacing: 0.5px; }
+    footer .footer-contact .phones { font-size: 14px; color: var(--cyan); letter-spacing: 1px; }
+    footer .copy { font-size: 10px; color: rgba(255,255,255,0.15); letter-spacing: 1px; margin-top: 20px; }
+
+    /* DIVIDER */
+    .divider { max-width: 900px; margin: 0 auto; padding: 0 40px; }
+    .divider hr { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    @media (max-width: 900px) {
+      nav { padding: 14px 24px; }
+      nav ul { display: none; }
+      .accordion { padding: 40px 16px 60px; }
+      .hero-stats { gap: 20px; flex-wrap: wrap; }
+      .hero-stat .num { font-size: 26px; }
+      .risk-grid, .step-flow, .goal-grid { grid-template-columns: 1fr; }
+      .feat-grid, .mx-grid { grid-template-columns: 1fr; }
+      .section-panel-inner { padding: 28px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">百城旅居<span>BAI CHENG LVJU · DIGITAL ECOLOGY</span></div>
+  <ul>
+    <li><a href="#s1">关于我们</a></li>
+    <li><a href="#s2">时代机遇</a></li>
+    <li><a href="#s3">企业矩阵</a></li>
+    <li><a href="#s4">AI生态</a></li>
+    <li><a href="#s5">发展规划</a></li>
+    <li><a href="#s6">创始团队</a></li>
+    <li><a href="#s7" class="nav-cta">联系我们</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-scanline"></div>
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">数字生态上市联盟 · 2026 全新战略</div>
+    <h1><span class="cyan glitch">数字生态</span>上市联盟<br><span class="gold">华曜百城</span>旅居新时代</h1>
+    <p class="tagline">贵州华曜百城旅游文化发展有限公司 · 全域旅居产业生态平台</p>
+    <p>整合数字旅居、AI运营、生态治理、资本护航四大战略，构建中国旅居产业首个闭环生态矩阵，引领行业绿色高质量发展。</p>
+    <div class="hero-btns">
+      <a href="#s1" class="btn-primary">探索联盟</a>
+      <a href="#s7" class="btn-secondary">联系我们</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">20,000+</div><div class="label">目标旅居房源</div></div>
+      <div class="hero-stat"><div class="num">100+</div><div class="label">生态合作伙伴</div></div>
+      <div class="hero-stat"><div class="num">¥2000亿</div><div class="label">资产价值规模</div></div>
+      <div class="hero-stat"><div class="num">LEED</div><div class="label">绿色建筑认证</div></div>
+    </div>
+    <div class="scroll-hint"><span></span></div>
+  </div>
+</section>
+
+<!-- ACCORDION SECTIONS -->
+<div class="accordion">
+
+  <!-- S1: ABOUT -->
+  <div id="s1">
+    <div class="section-trigger active" onclick="toggleSection(this)">
+      <span class="num">01</span>
+      <span class="title"><span class="en">ABOUT US · </span>关于我们</span>
+      <div class="arrow"></div>
+    </div>
+    <div class="section-panel open">
+      <div class="section-panel-inner">
+        <h2 class="panel-title"><span class="cyan">全域旅居产业</span><br>数字化生态平台</h2>
+        <p class="panel-desc">华曜百城是中国旅居产业数字化转型的先行者，以AI驱动运营升级，以绿色认证标准重构旅居体验，携手生态伙伴共创行业新未来。</p>
+        <div class="data-row">
+          <div class="data-card"><div class="val">108+</div><div class="lbl">生态合作伙伴</div></div>
+          <div class="data-card"><div class="val">20,000+</div><div class="lbl">目标旅居房源</div></div>
+          <div class="data-card"><div class="val">¥2000亿</div><div class="lbl">资产价值规模</div></div>
+          <div class="data-card"><div class="val">LEED</div><div class="lbl">绿色建筑认证</div></div>
+        </div>
+        <div class="feat-grid">
+          <div class="feat-card"><div class="feat-icon">🤖</div><h4>AI智慧运营系统</h4><p>实时市场分析、动态定价优化、智能客服全链路覆盖，提升经营效率15-20%，降低人工成本</p></div>
+          <div class="feat-card"><div class="feat-icon">🌿</div><h4>绿色生态认证体系</h4><p>实施"绿洲计划2026"，获取LEED与中国绿色建筑认证，实现能耗降低22%，运营成本显著优化</p></div>
+          <div class="feat-card"><div class="feat-icon">💰</div><h4>产业资本护航机制</h4><p>携手权威资本与战略投资者，提供股权激励计划与多层次资本支持，助力生态伙伴稳健发展</p></div>
+          <div class="feat-card"><div class="feat-icon">🏡</div><h4>全链路旅居生态</h4><p>整合规划设计、品牌输出、运营管理、金融支持全链条，构建"旅居+康养+文旅"融合新范式</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><hr></div>
+
+  <!-- S2: OPPORTUNITY -->
+  <div id="s2">
+    <div class="section-trigger" onclick="toggleSection(this)">
+      <span class="num">02</span>
+      <span class="title"><span class="en">OPPORTUNITY · </span>时代机遇 · 战略定位</span>
+      <div class="arrow"></div>
+    </div>
+    <div class="section-panel">
+      <div class="section-panel-inner">
+        <h2 class="panel-title"><span class="cyan">时代机遇</span> · 战略定位</h2>
+        <p class="panel-desc">面对万亿级旅居市场新机遇，百城旅居以"轻资产+数字化+生态协同"为核心战略，开创旅居产业发展新范式。</p>
+        <div class="feat-grid">
+          <div class="feat-card"><div class="feat-icon">📈</div><h4>战略一定位</h4><p>围绕"资本加投资加经营加"的核心定位，以平台化为战略核心，通过"资源+时间+品牌"三要素，构建旅居产业差异化发展路径，整合20000+旅居房源，实现全域资源协同。</p></div>
+          <div class="feat-card"><div class="feat-icon">🌐</div><h4>战略二发展</h4><p>围绕"数字+旅居+绿色"三大战略方向，推进数字旅居产业转型，实现业务数字化、管理智能化、生态协同化，打造行业领先的旅居生态运营平台。</p></div>
+          <div class="feat-card"><div class="feat-icon">🚀</div><h4>战略三升级</h4><p>把握旅居产业数字化与绿色化双重机遇，以生态协同发展为核心，整合OTA平台、行业协会、资本机构等多方资源，构建互利共生的旅居产业命运共同体。</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><hr></div>
+
+  <!-- S3: MATRIX -->
+  <div id="s3">
+    <div class="section-trigger" onclick="toggleSection(this)">
+      <span class="num">03</span>
+      <span class="title"><span class="en">BUSINESS MATRIX · </span>核心业务矩阵</span>
+      <div class="arrow"></div>
+    </div>
+    <div class="section-panel">
+      <div class="section-panel-inner">
+        <h2 class="panel-title"><span class="cyan">核心业务</span>矩阵</h2>
+        <p class="panel-desc">构建数字旅居全产业链能力，从智慧运营到绿色认证，从金融支持到生态协同，实现旅居产业闭环生态体系。</p>
+
+        <div class="sub-label">数字运营</div>
+        <div class="mx-grid" style="margin-bottom:24px;">
+          <div class="mx-card"><h4>AI数字运营系统 <span class="tag">核心</span></h4><p>AI动态定价引擎、实时市场分析、智能客服体系全链路覆盖，提升经营效率15-20%。</p><div class="tags"><span>动态定价</span><span>市场分析</span><span>智能客服</span><span>数据分析</span></div></div>
+          <div class="mx-card"><h4>数字旅居运营</h4><p>数字孪生技术实现资产可视化运营，通过手机端平台提供在线预订、入住办理、会员积分等一站式服务。</p><div class="tags"><span>数字孪生</span><span>在线预订</span><span>会员体系</span><span>CIP服务</span></div></div>
+          <div class="mx-card"><h4>智慧客源生态</h4><p>AI应用级解决方案整合线上线下客源渠道，实现精准营销与客户画像，构建高净值客群私域运营体系。</p><div class="tags"><span>AI营销</span><span>客户画像</span><span>私域运营</span><span>精准触达</span></div></div>
+        </div>
+
+        <div class="sub-label">绿色生态</div>
+        <div class="mx-grid" style="margin-bottom:24px;">
+          <div class="mx-card"><h4>绿色认证体系</h4><p>实施"绿洲计划2026"，通过节能系统升级、节水设备改造、新能源利用等举措，获取LEED及中国绿色建筑双认证。</p><div class="tags"><span>LEED认证</span><span>绿色建筑</span><span>节能降耗</span><span>新能源</span></div></div>
+          <div class="mx-card"><h4>绿色运营标准</h4><p>客房能耗降低35%，装配式装修覆盖率超80%，装配式装修工装效率提升40%，建立行业领先标准。</p><div class="tags"><span>能耗管控</span><span>装配式装修</span><span>智慧物联</span><span>绿色标准</span></div></div>
+          <div class="mx-card"><h4>绿色循环体系</h4><p>建立绿色物资循环利用体系，推进布草芯片RFID追踪，共建低碳旅居社区。</p><div class="tags"><span>物资溯源</span><span>RFID</span><span>布草管理</span><span>低碳社区</span></div></div>
+        </div>
+
+        <div class="sub-label">旅居生态</div>
+        <div class="mx-grid" style="margin-bottom:24px;">
+          <div class="mx-card"><h4>轻资产房源拓展</h4><p>通过轻资产模式整合优质房源，以品牌授权与系统输出为核心，快速扩展房源网络。</p><div class="tags"><span>品牌授权</span><span>系统输出</span><span>房源整合</span><span>轻资产</span></div></div>
+          <div class="mx-card"><h4>生态合作模式</h4><p>为旅居伙伴提供绿色认证授信与金融服务支持，预估可带来15%的房价溢价。</p><div class="tags"><span>授信服务</span><span>金融服务</span><span>流量倾斜</span><span>品牌溢价</span></div></div>
+          <div class="mx-card"><h4>高端旅居标准</h4><p>制定高端旅居服务标准：房源数量80+、OTA评分4.9+、无投诉合同期限5年起。</p><div class="tags"><span>高端标准</span><span>服务管家</span><span>会员权益</span><span>差异化</span></div></div>
+        </div>
+
+        <div class="sub-label">资本支持</div>
+        <div class="mx-grid">
+          <div class="mx-card"><h4>股权众筹支持</h4><p>为联盟生态提供多层次资本支持，包括战略投资、股权投资、产业基金等多元融资渠道。</p><div class="tags"><span>战略投资</span><span>股权融资</span><span>产业基金</span><span>资本护航</span></div></div>
+          <div class="mx-card"><h4>综合授信体系</h4><p>联合权威评估机构制定股权公允价值，综合考虑未来盈利预期，动态调整授信额度。</p><div class="tags"><span>公允定价</span><span>综合授信</span><span>动态评估</span><span>透明可靠</span></div></div>
+          <div class="mx-card"><h4>多层次退出机制</h4><p>提供上市退出、并购退出、回购退出等多层次资本退出路径，实现资本价值最大化。</p><div class="tags"><span>上市退出</span><span>并购退出</span><span>回购机制</span><span>流动性保障</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><hr></div>
+
+  <!-- S4: AI + ECOLOGY -->
+  <div id="s4">
+    <div class="section-trigger" onclick="toggleSection(this)">
+      <span class="num">04</span>
+      <span class="title"><span class="en">AI & ECOLOGY · </span>AI赋能 · 生态模式</span>
+      <div class="arrow"></div>
+    </div>
+    <div class="section-panel">
+      <div class="section-panel-inner">
+        <h2 class="panel-title"><span class="cyan">AI赋能</span>数字旅居全链路</h2>
+        <p class="panel-desc">四大AI引擎驱动旅居产业数字化升级，从定价到运营，从能耗到客服，全流程智能化。</p>
+        <div class="data-row" style="margin-bottom:28px;">
+          <div class="data-card"><div class="val">15-20%</div><div class="lbl">收益提升</div></div>
+          <div class="data-card"><div class="val">70%</div><div class="lbl">咨询自动化</div></div>
+          <div class="data-card"><div class="val">22%</div><div class="lbl">成本降低</div></div>
+          <div class="data-card"><div class="val">92+</div><div class="lbl">OTA评分目标</div></div>
+        </div>
+        <div class="feat-grid" style="margin-bottom:36px;">
+          <div class="feat-card"><div class="feat-icon">📊</div><h4>AI动态定价与收益管理</h4><p>AI动态分析系统实时追踪市场数据，自动优化定价策略，预测RevPAR提升15-20%，实现收益最大化。</p></div>
+          <div class="feat-card"><div class="feat-icon">🛏️</div><h4>智慧客房与体验升级</h4><p>旅居专属单元智能空间，VR预览与智能设备全接入，通过AI运营降低约70%的重复咨询量。</p></div>
+          <div class="feat-card"><div class="feat-icon">🔧</div><h4>智慧运营中台</h4><p>集成会员体系、POS系统、耗品系统、CRM系统全链路数据，打通"运营驾驶舱"实时指标看板。</p></div>
+          <div class="feat-card"><div class="feat-icon">🌱</div><h4>绿色数字化管控</h4><p>AI能耗管控平台实时监测水电能耗，智能优化资源配置，实现运营成本降低22%。</p></div>
+        </div>
+
+        <h2 class="panel-title"><span class="cyan">生态商业</span>模式</h2>
+        <p class="panel-desc">四大生态引擎协同驱动，构建中国旅居产业最具竞争力的闭环商业生态体系。</p>
+        <div class="feat-grid">
+          <div class="feat-card"><div class="feat-icon">🏗️</div><h4>存量资产盘活模式</h4><p>通过轻资产模式整合存量房源，以品牌授权与数字化系统输出为核心，为合作伙伴盘活沉睡资产价值。</p></div>
+          <div class="feat-card"><div class="feat-icon">🌿</div><h4>绿色认证溢价模式</h4><p>为合作旅居提供绿色认证升级与金融授信支持，预估可实现15%的房价溢价，获得优先推荐。</p></div>
+          <div class="feat-card"><div class="feat-icon">💎</div><h4>高端会员资产模式</h4><p>为高净值用户提供稀缺旅居资产认购与权益通证服务，挖掘旅居资产的金融属性与增值潜力。</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><hr></div>
+
+  <!-- S5: ROADMAP + PLAN -->
+  <div id="s5">
+    <div class="section-trigger" onclick="toggleSection(this)">
+      <span class="num">05</span>
+      <span class="title"><span class="en">ROADMAP & PLAN · </span>发展路线图 · 战略规划</span>
+      <div class="arrow"></div>
+    </div>
+    <div class="section-panel">
+      <div class="section-panel-inner">
+        <h2 class="panel-title"><span class="cyan">发展路线图</span></h2>
+        <p class="panel-desc">以三年为周期，分阶段推进数字旅居生态建设，实现从平台搭建到全面生态化的战略跃升。</p>
+        <div class="timeline" style="margin-bottom:32px;">
+          <div class="tl-item"><div class="tl-year-box">2026</div><div class="content"><h4>基础构建期</h4><p>整合旅居房源与数字运营系统，实现在线预订、智能定价、AI客服三大系统上线，数字运营覆盖率达70%。</p></div></div>
+          <div class="tl-item"><div class="tl-year-box">2027</div><div class="content"><h4>规模扩张期</h4><p>扩大数字旅居规模至10,000+房源，50%房源获得绿色建筑认证，会员体系与品牌影响力全面升级。</p></div></div>
+          <div class="tl-item"><div class="tl-year-box">2028</div><div class="content"><h4>生态成熟期</h4><p>实现20,000+房源生态网络，80%房源达到绿色运营标准，AI运营深度应用，全行业生态协同体系成熟。</p></div></div>
+        </div>
+
+        <h2 class="panel-title"><span class="cyan">战略实施</span>规划</h2>
+        <p class="panel-desc">从组织架构到生态布局，从股权激励到资本运作，全方位支撑联盟生态的稳健发展与上市目标。</p>
+        <div class="feat-grid" style="margin-bottom:28px;">
+          <div class="feat-card"><div class="feat-icon">🏛️</div><h4>组织架构与治理</h4><p>完善公司治理结构，建立董事会与专业委员会，制定股权激励计划，建立合伙人机制。</p></div>
+          <div class="feat-card"><div class="feat-icon">🤝</div><h4>生态合作伙伴规划</h4><p>发展100+优质供应商伙伴，推进100+供应商伙伴登陆资本市场，制定行业实施标准。</p></div>
+          <div class="feat-card"><div class="feat-icon">💰</div><h4>资本运作计划</h4><p>目标融资¥2000万，规划实物资产价值运营，预测营收规模可达¥330万，净利率行业领先。</p></div>
+          <div class="feat-card"><div class="feat-icon">🚀</div><h4>上市联盟规划</h4><p>对接中国信投等权威机构，完成TRII评级，实施"一带一路"国际旅居战略，拓展全球市场。</p></div>
+        </div>
+
+        <div class="sub-label" style="color:var(--gold);">ESOP股权激励里程碑</div>
+        <div class="panel-table">
+          <table>
+            <thead><tr><th>里程碑节点</th><th>ESOP行权价格</th><th>优化行权价格</th></tr></thead>
+            <tbody>
+              <tr><td>2026年12月31日</td><td>¥1.20/股</td><td>¥1.60/股</td></tr>
+              <tr><td>2027年6月30日</td><td>¥1.50/股</td><td>¥1.80/股</td></tr>
+              <tr><td>2027年12月31日</td><td>¥1.50/股</td><td>¥2.00/股</td></tr>
+              <tr><td>2028年6月30日</td><td>¥1.80/股</td><td>¥2.20/股</td></tr>
+              <tr><td>2028年12月31日</td><td>¥2.00/股</td><td>¥2.50/股</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><hr></div>
+
+  <!-- S6: TEAM -->
+  <div id="s6">
+    <div class="section-trigger" onclick="toggleSection(this)">
+      <span class="num">06</span>
+      <span class="title"><span class="en">FOUNDING TEAM · </span>创始联盟团队</span>
+      <div class="arrow"></div>
+    </div>
+    <div class="section-panel">
+      <div class="section-panel-inner">
+        <h2 class="panel-title"><span class="cyan">创始联盟</span>团队</h2>
+        <p class="panel-desc">汇聚旅居产业顶尖人才与资深专家，以国际化视野与高效协同，打造中国旅居产业最具专业实力的运营团队。</p>
+        <div class="data-row" style="margin-bottom:28px;">
+          <div class="data-card"><div class="val">108+</div><div class="lbl">生态联盟成员</div></div>
+          <div class="data-card"><div class="val">¥9980</div><div class="lbl">合伙人入门费用</div></div>
+          <div class="data-card"><div class="val">1:1</div><div class="lbl">原始股权赠送比例</div></div>
+        </div>
+        <div class="feat-grid" style="margin-bottom:28px;">
+          <div class="feat-card"><div class="feat-icon">🏛️</div><h4>股份制原始股权</h4><p>共享联盟生态全平台股份，共享经营成果与资本增值，同步经营公司0.1%股权。</p></div>
+          <div class="feat-card"><div class="feat-icon">👑</div><h4>创始联盟推荐权</h4><p>创始联盟成员可推荐1名原始股东，获得平台股份奖励，参与联盟发展规划制定。</p></div>
+          <div class="feat-card"><div class="feat-icon">🎁</div><h4>推荐股东奖励</h4><p>直接推荐科创企业可获10%干股，推荐B轮投资可获2%股权奖励，推荐旅居供应商可获2%权益。</p></div>
+          <div class="feat-card"><div class="feat-icon">💼</div><h4>事业发展支持</h4><p>提供专业培训与事业发展支持，资源对接与创业辅导服务，助力事业成功，提升行业竞争力。</p></div>
+        </div>
+
+        <div class="sub-label">战略合作体系</div>
+        <div class="step-flow">
+          <div class="step-item"><div class="step-icon">🤝</div><h4>平台对接</h4><p>中国信投TRII评级对接与背书，实现品牌公信力背书与价值认可</p></div>
+          <div class="step-item"><div class="step-icon">💰</div><h4>资本赋能</h4><p>通过股权众筹与资本众筹模式，吸引战略投资者共谋发展</p></div>
+          <div class="step-item"><div class="step-icon">🚀</div><h4>事业协同</h4><p>产业生态协同发展，为合作伙伴提供市场拓展与资源对接支持</p></div>
+          <div class="step-item"><div class="step-icon">📈</div><h4>资本退出</h4><p>多层次资本退出路径，包括上市、并购、回购等多种退出方式</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><hr></div>
+
+  <!-- S7: RISK + VISION -->
+  <div id="s7">
+    <div class="section-trigger" onclick="toggleSection(this)">
+      <span class="num">07</span>
+      <span class="title"><span class="en">RISK & VISION · </span>风险应对 · 愿景使命</span>
+      <div class="arrow"></div>
+    </div>
+    <div class="section-panel">
+      <div class="section-panel-inner">
+        <h2 class="panel-title"><span class="cyan">风险应对</span>方案</h2>
+        <p class="panel-desc">建立全面风险管理体系，主动识别与应对市场、竞争、政策等各类风险，确保联盟生态稳健发展。</p>
+        <div class="risk-grid" style="margin-bottom:28px;">
+          <div class="risk-card"><h4>⚠️ 市场风险应对</h4><ul><li>完善信息安全与合规管理体系，确保数据安全与隐私保护</li><li>加强政策研究，及时调整经营策略，降低监管政策风险</li><li>建立多元化收入结构，提升抗周期风险能力</li></ul></div>
+          <div class="risk-card"><h4>📊 竞争风险应对</h4><ul><li>推进差异化竞争战略，打造核心技术壁垒与品牌护城河</li><li>深化客户关系管理，提升用户粘性与忠诚度</li><li>紧跟行业技术发展趋势，保持技术领先优势</li></ul></div>
+        </div>
+
+        <h2 class="panel-title"><span class="cyan">愿景与</span>使命</h2>
+        <div class="panel-quote">成为<span class="cyan"><strong>中国旅居产业数字化转型</strong></span>与<strong>绿色生态发展</strong>的引领者，为用户创造美好旅居生活，为生态伙伴构建共创共享的价值平台。</div>
+        <div class="goal-grid">
+          <div class="goal-card"><div class="gi">🏆</div><h4>行业领军目标</h4><p>成为中国旅居产业数字化转型与绿色转型的标杆企业，制定行业标准，引领产业发展方向</p></div>
+          <div class="goal-card"><div class="gi">🌍</div><h4>生态价值创造</h4><p>以生态协同与创新驱动为核心，为合作伙伴提供发展平台，为用户创造独特价值</p></div>
+          <div class="goal-card"><div class="gi">🚀</div><h4>全球发展目标</h4><p>推进"一带一路"国际旅居战略拓展，实现中国旅居品牌的全球化布局</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="company">贵州华曜百城旅游文化发展有限公司</div>
+  <div class="sub">GUIZHOU HUAYAO BAICHENG TOURISM & CULTURE DEVELOPMENT CO., LTD.</div>
+  <div class="footer-contact">
+    <div class="address">📍 贵州省贵阳市经济开发区小孟街道开发大道陈亮村（贵州杰联建设产业园建设项目）</div>
+    <div class="phones">📞 18184457777 &nbsp;|&nbsp; 13710053327</div>
+  </div>
+  <div class="copy">© 2026 贵州华曜百城旅游文化发展有限公司 · 数字生态上市联盟 · 保留所有权利</div>
+</footer>
+
+<script>
+(function(){
+  var canvas = document.getElementById('hero-canvas');
+  var ctx = canvas.getContext('2d');
+  var W, H, particles = [];
+  function resize(){ W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
+  resize(); window.addEventListener('resize', resize);
+  for(var i = 0; i < 120; i++){
+    particles.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.8+0.3, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5, alpha: Math.random()*0.6+0.1, color: Math.random()>0.75?'#a855f7':'#00f5e4' });
+  }
+  function shootStar(){
+    var sx = Math.random()*W, sy = Math.random()*H*0.5;
+    var angle = Math.PI/4+(Math.random()-0.5)*0.5;
+    var speed = 4+Math.random()*6, vxs = Math.cos(angle)*speed, vys = Math.sin(angle)*speed;
+    var life = 1;
+    (function anim(){
+      ctx.save();
+      ctx.globalAlpha = life*0.8;
+      ctx.strokeStyle = '#00f5e4'; ctx.shadowBlur = 8; ctx.shadowColor = '#00f5e4'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(sx+vxs*3,sy+vys*3); ctx.stroke();
+      ctx.restore();
+      life -= 0.04;
+      if(life > 0) requestAnimationFrame(anim);
+    })();
+  }
+  setInterval(shootStar, 800);
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(function(p){
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0||p.x>W) p.vx*=-1;
+      if(p.y<0||p.y>H) p.vy*=-1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha;
+      ctx.shadowBlur = 10; ctx.shadowColor = p.color; ctx.fill();
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+    });
+    for(var i=0;i<particles.length;i++) for(var j=i+1;j<particles.length;j++){
+      var dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+      var dist = Math.sqrt(dx*dx+dy*dy);
+      if(dist<130){ ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.strokeStyle='rgba(0,245,228,'+(0.1*(1-dist/130))+')'; ctx.lineWidth=0.5; ctx.stroke(); }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+function toggleSection(trigger){
+  var panel = trigger.nextElementSibling;
+  var allTriggers = document.querySelectorAll('.section-trigger');
+  var allPanels = document.querySelectorAll('.section-panel');
+  if(panel.classList.contains('open')){ panel.classList.remove('open'); trigger.classList.remove('active'); return; }
+  allPanels.forEach(function(p){ p.classList.remove('open'); });
+  allTriggers.forEach(function(t){ t.classList.remove('active'); });
+  panel.classList.add('open');
+  trigger.classList.add('active');
+  setTimeout(function(){ trigger.scrollIntoView({ behavior:'smooth', block:'start' }); }, 80);
+}
+window.addEventListener('scroll', function(){
+  document.querySelector('nav').style.boxShadow = window.scrollY>50?'0 4px 30px rgba(0,0,0,0.6)':'none';
+});
+</script>
+</body>
+</html>
